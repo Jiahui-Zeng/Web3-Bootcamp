@@ -1,16 +1,21 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "./MyToken.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+// Add callback function
 
 // Handle the deposit of tokens and keep track of each user's balance
-contract TokenBank {
-    NewToken public token;
+contract TokenBank is TokenRecipient, MyToken {
+
+    MyToken public token;
     address public owner;
     mapping(address => uint256) public balances;
 
     constructor(address tokenAddress) {
-        token = NewToken(tokenAddress);
+        token = MyToken(tokenAddress);
         owner = msg.sender;
     }
 
@@ -28,5 +33,11 @@ contract TokenBank {
 
     function getBalance() public view returns (uint256) {
         return token.balanceOf(address(this));
+    }
+
+    function tokensReceived(address sender, uint amount) external returns (bool) {
+        require(msg.sender == address(token), "Invalid"); 
+        balances[sender] += amount;
+        return true;
     }
 }
