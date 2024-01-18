@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 // Basic implementation of an ERC20 token
-contract NewToken {
+contract MyERC20Token {
     string public name;
     string public symbol;
     uint8 public decimals = 18;
